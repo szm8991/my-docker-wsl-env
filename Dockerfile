@@ -27,11 +27,28 @@ ENV SHELL /bin/zsh
 RUN echo 'source /root/.bashrc' >> /root/.zshrc
 # end
 
+# basic tools
+RUN yes | pacman -S curl tree
+ENV EDITOR=vim
+ENV VISUAL=vim
+# end
+
+
 # Dev env for JS
 ENV PNPM_HOME /root/.local/share/pnpm
 ENV PATH $PNPM_HOME:$PATH
 RUN yes | pacman -S nodejs npm &&\
     npm config set registry=https://registry.npmmirror.com &&\
-		corepack enable &&\
-		pnpm setup &&\
+    corepack enable &&\
+    pnpm setup &&\
+    pnpm i -g http-server
+# end
+
+# tools
+
+# fzf is a general-purpose command-line fuzzy finder
+RUN yes | pacman -S fzf openssh exa the_silver_searcher fd rsync &&\
+    ssh-keygen -t rsa -N '' -f /etc/ssh/ssh_host_rsa_key &&\
+    ssh-keygen -t dsa -N '' -f /etc/ssh/ssh_host_dsa_key
+
 # end
