@@ -17,6 +17,7 @@ VOLUME [ "/root/", "/root/repos" ]
 
 # bash
 ADD bashrc /root/.bashrc
+ADD z /root/.config/z
 # end
 
 # zsh
@@ -25,6 +26,7 @@ RUN zsh -c 'git clone https://code.aliyun.com/412244196/prezto.git "$HOME/.zprez
     zsh -c 'for rcfile in "$HOME"/.zprezto/runcoms/z*; do ln -s "$rcfile" "$HOME/.${rcfile:t}"; done'
 ENV SHELL /bin/zsh
 RUN echo 'source /root/.bashrc' >> /root/.zshrc
+RUN echo 'source /root/.config/z/z.sh' >> /root/.zshrc
 # end
 
 # basic tools

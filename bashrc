@@ -13,6 +13,8 @@ alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset
 # alias la='ls -alh'
 # end
 
+export PATH="/root/.local/bin:$PATH"
+
 f() {
   local file
   q=$1
@@ -20,5 +22,29 @@ f() {
   file=$(ag -l -g ""| fzf --query="$q" --select-1 --exit-0 -x)
   if [ -n "$file" ] ;then
     code "$file"
+  fi
+}
+fd() {
+  local file
+  local dir
+  file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir"
+}
+fs(){
+  local file
+  q=$1
+  if [ -z "$q"] ;then
+    q="."
+  fi
+  result=$(ag "$q" | fzf)
+  IFS=':' read file line other <<< "$result"
+  [ -n "$file" ] && code -g "$file":"$line";
+}
+# [ `alias | grep "^z=" | wc -l` != 0 ] && unalias z
+j() {
+  if [[ -z "$*" ]]; then
+    cd "$(_z -l 2>&1 | fzf +s | sed 's/^[0-9,.]* *//')"
+  else
+    _last_z_args="$@"
+    _z "$@"
   fi
 }
