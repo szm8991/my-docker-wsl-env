@@ -49,6 +49,23 @@ RUN yes | pacman -Syy && yes | pacman -S nodejs npm &&\
     pnpm i -g http-server
 # end
 
+# Dev env for ruby
+ADD rvm-stable.tar.gz /tmp/rvm-stable.tar.gz
+ENV PATH /usr/local/rvm/rubies/ruby-3.0.0/bin:$PATH
+ENV PATH /usr/local/rvm/gems/ruby-3.0.0/bin:$PATH
+ENV PATH /usr/local/rvm/bin:$PATH
+ENV GEM_HOME /usr/local/rvm/gems/ruby-3.0.0
+ENV GEM_PATH /usr/local/rvm/gems/ruby-3.0.0:/usr/local/rvm/gems/ruby-3.0.0@global
+
+RUN touch /root/.config/.gemrc; ln -s /root/.config/.gemrc /root/.gemrc;
+RUN mv /tmp/rvm-stable.tar.gz/rvm-rvm-6bfc921 /tmp/rvm && cd /tmp/rvm && ./install --auto-dotfiles &&\
+    echo "ruby_url=https://cache.ruby-china.com/pub/ruby" > /usr/local/rvm/user/db &&\
+    echo 'gem: --no-document --verbose' >> "$HOME/.gemrc" &&\
+    rvm install ruby-3.0.0
+RUN gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/ &&\
+    gem install solargraph rubocop rufo
+# end
+
 # tools
 
 # fzf is a general-purpose command-line fuzzy finder
