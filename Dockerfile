@@ -11,8 +11,9 @@ ADD mirrorlist /etc/pacman.d/mirrorlist
 RUN yes | pacman -Syu 
 # download git zsh
 RUN yes | pacman -S git zsh
+RUN mkdir -p /root/.config
 # set volume for file share between linux and windows
-VOLUME [ "/root/", "/root/repos" ]
+VOLUME [ "/root/.config", "/root/", "/root/repos" ]
 # end 
 
 # bash
@@ -39,7 +40,9 @@ ENV VISUAL=vim
 # Dev env for JS
 ENV PNPM_HOME /root/.local/share/pnpm
 ENV PATH $PNPM_HOME:$PATH
-RUN yes | pacman -S nodejs npm &&\
+# -S: Sync packages
+# -yy: refresh package database, force refresh even if local database appears up-to-date
+RUN yes | pacman -Syy && yes | pacman -S nodejs npm &&\
     npm config set registry=https://registry.npmmirror.com &&\
     corepack enable &&\
     pnpm setup &&\
