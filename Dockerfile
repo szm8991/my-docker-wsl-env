@@ -13,7 +13,7 @@ RUN yes | pacman -Syu
 RUN yes | pacman -S git zsh
 RUN mkdir -p /root/.config
 # set volume for file share between linux and windows
-VOLUME [ "/root/.config", "/root/", "/root/repos" ]
+VOLUME [ "/root/.config",  "/root/repos" , "/root/.vscode-server/extensions", "/root/.local/share/pnpm", "/var/lib/docker", "/usr/local/rvm/gems", "/root/.ssh" ]
 # end 
 
 # bash
@@ -47,6 +47,16 @@ RUN yes | pacman -Syy && yes | pacman -S nodejs npm &&\
     corepack enable &&\
     pnpm setup &&\
     pnpm i -g http-server
+# end
+
+# nvm
+ENV NVM_DIR /root/.nvm
+ADD nvm-0.39.1 /root/.nvm/
+RUN sh ${NVM_DIR}/nvm.sh &&\
+    echo '' >> /root/.zshrc &&\
+    echo 'export NVM_DIR="$HOME/.nvm"' >> /root/.zshrc &&\
+    echo '[ -s "${NVM_DIR}/nvm.sh" ] && { source "${NVM_DIR}/nvm.sh" }' >> /root/.zshrc &&\
+    echo '[ -s "${NVM_DIR}/bash_completion" ] && { source "${NVM_DIR}/bash_completion" } ' >> /root/.zshrc
 # end
 
 # Dev env for ruby
